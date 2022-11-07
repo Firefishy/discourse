@@ -605,11 +605,7 @@ class ImportScripts::Base
 
     opts[:guardian] = STAFF_GUARDIAN
     if @bbcode_to_md
-      opts[:raw] = begin
-        opts[:raw].bbcode_to_md(false, {}, :disable, :quote)
-      rescue StandardError
-        opts[:raw]
-      end
+      opts[:raw] = opts[:raw].bbcode_to_md(false, {}, :disable, :quote, :u) rescue opts[:raw]
     end
 
     post_creator = PostCreator.new(user, opts)
