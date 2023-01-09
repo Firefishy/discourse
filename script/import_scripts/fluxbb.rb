@@ -394,11 +394,11 @@ class ImportScripts::FluxBB < ImportScripts::Base
       end
 
       if post.post_number == 1
-        topic = post.topic
-        tcf = topic.custom_fields
-        if tcf && tcf["import_id"]
-          old_topic_url = "viewtopic.php?id=#{tcf['import_id']}"
-          Permalink.create(url: old_topic_url, topic_id: topic.id)
+        topic = post.topic_id
+        tcf = post.meta_data
+        if tcf && tcf["import_topic_id"]
+          old_topic_url = "viewtopic.php?id=#{tcf['import_topic_id']}"
+          Permalink.create(url: old_topic_url, topic_id: topic)
         end
       end
     end
