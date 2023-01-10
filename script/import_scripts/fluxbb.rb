@@ -393,14 +393,14 @@ class ImportScripts::FluxBB < ImportScripts::Base
         Permalink.create(url: old_post_url, post_id: post.id)
       end
 
-      if post.post_number == 1
-        topic = post.topic_id
-        tcf = post.meta_data
-        if tcf && tcf["import_topic_id"]
-          old_topic_url = "viewtopic.php?id=#{tcf['import_topic_id']}"
-          Permalink.create(url: old_topic_url, topic_id: topic)
-        end
-      end
+      # if post.post_number == 1
+      #   topic = post.topic_id
+      #   tcf = post.meta_data
+      #   if tcf && tcf["import_topic_id"]
+      #     old_topic_url = "viewtopic.php?id=#{tcf['import_topic_id']}"
+      #     Permalink.create(url: old_topic_url, topic_id: topic)
+      #   end
+      # end
     end
 
     Category.find_each do |cat|
