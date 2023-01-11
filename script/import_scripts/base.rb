@@ -609,7 +609,7 @@ class ImportScripts::Base
 
     opts[:guardian] = STAFF_GUARDIAN
     if @bbcode_to_md
-      opts[:raw] = opts[:raw].bbcode_to_md(false, bbcode_tag_additions_and_overrides, :disable, :quote, :u) rescue opts[:raw]
+      opts[:raw] = opts[:raw].bbcode_to_md(false, bbcode_tag_additions_and_overrides) rescue opts[:raw]
     end
 
     post_creator = PostCreator.new(user, opts)
