@@ -79,6 +79,7 @@ class ImportScripts::FluxBB < ImportScripts::Base
                 registration_ip registration_ip_address, last_visit last_visit_time,
                 last_email_sent last_emailed_at, location, group_id
          FROM #{FLUXBB_PREFIX}users
+         ORDER BY id
          LIMIT #{BATCH_SIZE}
          OFFSET #{offset};",
         )
