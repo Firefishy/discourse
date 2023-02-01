@@ -75,16 +75,25 @@ class ImportScripts::FluxBB < ImportScripts::Base
     batches(BATCH_SIZE) do |offset|
       results =
         mysql_query(
-          "SELECT id, username, realname name, url website, email email, registered created_at,
+          "SELECT id, username, realname name, url website, COALESCE(osm_email, email) email, registered created_at,
                 registration_ip registration_ip_address, last_visit last_visit_time,
-                last_email_sent last_emailed_at, location, group_id
+                last_email_sent last_emailed_at, location, group_id, osm_id
          FROM #{FLUXBB_PREFIX}users
+         LEFT OUTER JOIN osm_user_emails ON osm_user_emails.osm_user = #{FLUXBB_PREFIX}users.osm_id
          ORDER BY id
          LIMIT #{BATCH_SIZE}
          OFFSET #{offset};",
         )
 
       break if results.size < 1
+
+      results.each do |user|
+        if user["osm_id"].to_i.zero?
+          user.delete("osm_id")
+        elsif uaa = UserAssociatedAccount.find_by(provider_name: "oauth2_basic", provider_uid: user["osm_id"].to_i)
+          user["email"] = User.find(uaa.user_id).email
+        end
+      end
 
       next if all_records_exist? :users, results.map { |u| u["id"].to_i }
 
@@ -103,6 +112,7 @@ class ImportScripts::FluxBB < ImportScripts::Base
           location: user["location"],
           moderator: user["group_id"] == 2,
           admin: user["group_id"] == 1,
+          post_create_action: proc { |u| link_user(u, user["osm_id"]) },
         }
       end
 
@@ -116,6 +126,12 @@ class ImportScripts::FluxBB < ImportScripts::Base
           GroupUser.find_or_create_by(user_id: user_id, group_id: group_id) if user_id && group_id
         end
       end
+    end
+  end
+
+  def link_user(user, osm_id)
+    UserAssociatedAccount.find_or_create_by(provider_name: "oauth2_basic", provider_uid: osm_id.to_i) do |uaa|
+      uaa.user_id = user.id
     end
   end
 
