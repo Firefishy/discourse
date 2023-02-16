@@ -186,7 +186,8 @@ class ImportScripts::FluxBB < ImportScripts::Base
                t.first_post_id first_post_id,
                p.poster_id user_id,
                p.message raw,
-               p.posted created_at
+               p.posted created_at,
+               t.closed
         FROM #{FLUXBB_PREFIX}posts p,
              #{FLUXBB_PREFIX}topics t
         WHERE p.topic_id = t.id
@@ -210,6 +211,7 @@ class ImportScripts::FluxBB < ImportScripts::Base
 
         if m["id"] == m["first_post_id"]
           mapped[:import_topic_id] = m["topic_id"]
+          mapped[:import_closed] = m["closed"]
           mapped[:category] = category_id_from_imported_category_id("child##{m["category_id"]}")
           mapped[:title] = CGI.unescapeHTML(m["title"])
         else
