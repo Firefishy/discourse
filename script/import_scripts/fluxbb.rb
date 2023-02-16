@@ -209,6 +209,7 @@ class ImportScripts::FluxBB < ImportScripts::Base
         mapped[:created_at] = Time.zone.at(m["created_at"])
 
         if m["id"] == m["first_post_id"]
+          mapped[:import_topic_id] = m["topic_id"]
           mapped[:category] = category_id_from_imported_category_id("child##{m["category_id"]}")
           mapped[:title] = CGI.unescapeHTML(m["title"])
         else
@@ -407,14 +408,14 @@ class ImportScripts::FluxBB < ImportScripts::Base
         Permalink.create(url: old_post_url, post_id: post.id)
       end
 
-      # if post.post_number == 1
-      #   topic = post.topic_id
-      #   tcf = post.meta_data
-      #   if tcf && tcf["import_topic_id"]
-      #     old_topic_url = "viewtopic.php?id=#{tcf['import_topic_id']}"
-      #     Permalink.create(url: old_topic_url, topic_id: topic)
-      #   end
-      # end
+      if post.post_number == 1
+        topic = post.topic
+        tcf = topic&.custom_fields
+        if tcf && tcf["import_topic_id"]
+          old_topic_url = "viewtopic.php?id=#{tcf['import_topic_id']}"
+          Permalink.create(url: old_topic_url, topic_id: topic.id)
+        end
+      end
     end
 
     Category.find_each do |cat|
