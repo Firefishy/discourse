@@ -289,7 +289,7 @@ class ImportScripts::FluxBB < ImportScripts::Base
     s.gsub!(/\[list\](.*?)\[\/list\]/im, '<ul>\1</ul>')
     s.gsub!(/\[list=1\](.*?)\[\/list\]/im, '<ol>\1</ol>')
     s.gsub!(/\[list=a\](.*?)\[\/list\]/im, '<ol class="alpha">\1</ol>')
-    s.gsub!(/\[list=\*\](.*?)\[\/list\]/im, '<ol>\1</ol>')
+    s.gsub!(/\[list=\*\](.*?)\[\/list\]/im, '<ul>\1</ul>')
 
     # :) is encoded as <!-- s:) --><img src="{SMILIES_PATH}/icon_e_smile.gif" alt=":)" title="Smile" /><!-- s:) -->
     s.gsub!(/<!-- s(\S+) -->(?:.*)<!-- s(?:\S+) -->/, '\1')
