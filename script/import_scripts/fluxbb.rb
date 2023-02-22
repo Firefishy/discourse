@@ -191,7 +191,7 @@ class ImportScripts::FluxBB < ImportScripts::Base
         FROM #{FLUXBB_PREFIX}posts p,
              #{FLUXBB_PREFIX}topics t
         WHERE p.topic_id = t.id
-        ORDER BY p.posted
+        ORDER BY p.id
         LIMIT #{BATCH_SIZE}
         OFFSET #{offset};
       ",
