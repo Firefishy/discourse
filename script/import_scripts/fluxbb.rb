@@ -91,7 +91,7 @@ class ImportScripts::FluxBB < ImportScripts::Base
         if user["osm_id"].to_i.zero?
           user.delete("osm_id")
         elsif uaa = UserAssociatedAccount.find_by(provider_name: "oauth2_basic", provider_uid: user["osm_id"].to_i)
-          user["email"] = User.find(uaa.user_id).email
+          user["email"] = User.find(uaa.user_id).email unless uaa.user_id.nil?
         end
       end
 
